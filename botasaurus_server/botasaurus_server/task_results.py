@@ -4,7 +4,7 @@ from hashlib import sha256
 import json
 import ndjson
 import os
-from botasaurus.cache import read_json, _has,_remove, _delete_items, write_json
+from botasaurus_cf_solve.cache import read_json, _has,_remove, _delete_items, write_json
 from .utils import path_task_results_tasks,path_task_results_cache
 
 def _get(cache_path):

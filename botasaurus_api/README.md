@@ -17,7 +17,10 @@ python -m pip install botasaurus-api
 First, import the `Api` class from the library:
 
 ```python
-from botasaurus-api import Api
+from botasaurus_cf_solve
+
+-api
+import Api
 ```
 
 Then, create an instance of the `Api` class:

@@ -289,9 +289,11 @@ Now, it's time to launch the bot and see it in action!
 ### Running the Bot
 
 1. In the repository cloned earlier, open `task.py` and paste the following code.
+
 ```python
-import botasaurus as bt
+import botasaurus_cf_solve as bt
 import urllib.parse
+
 
 @browser(
     block_images=True,
@@ -299,7 +301,6 @@ import urllib.parse
     reuse_driver=True,
 )
 def scrape_places(driver: AntiDetectDriver, link):
-
     # Visit an individual place and extract data
     def scrape_place_data():
         driver.get(link)
@@ -342,6 +343,7 @@ def scrape_places(driver: AntiDetectDriver, link):
             "rating": rating,
             "link": link,
         }
+
     return scrape_place_data()
 
 
@@ -350,7 +352,6 @@ def scrape_places(driver: AntiDetectDriver, link):
     block_images=True,
 )
 def scrape_places_links(driver: AntiDetectDriver, query):
-
     # Visit Google Maps
     def visit_google_maps():
         encoded_query = urllib.parse.quote_plus(query)
@@ -393,6 +394,7 @@ def scrape_places_links(driver: AntiDetectDriver, query):
     # Return the places links to be saved as a output/links file
     filename = 'links'
     return filename, places_links
+
 
 if __name__ == "__main__":
     links = scrape_places_links()

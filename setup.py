@@ -10,7 +10,7 @@ install_requires = [
     "openpyxl",
     "close_chrome",
     "botasaurus-api",
-    "botasaurus-driver",
+    "botasaurus-driver-cf-solve",
     "bota",
     "botasaurus-proxy-authentication",
     "botasaurus-requests"
@@ -30,8 +30,8 @@ def get_description():
         return None
 
 setup(
-    name="botasaurus",
-    packages=["botasaurus"],
+    name="botasaurus_cf_solve",
+    packages=["botasaurus_cf_solve"],
     version='4.0.60',
     license="MIT",
     project_urls={
