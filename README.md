@@ -96,13 +96,14 @@ code .  # This will open the project in VSCode if you have it installed
 Now, create a Python script named `main.py` in your project directory and paste the following code:
 
 ```python
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.browser import browser, Driver
+
 
 @browser
 def scrape_heading_task(driver: Driver, data):
     # Visit the Omkar Cloud website
     driver.get("https://www.omkar.cloud/")
-    
+
     # Retrieve the heading element's text
     heading = driver.get_text("h1")
 
@@ -110,7 +111,8 @@ def scrape_heading_task(driver: Driver, data):
     return {
         "heading": heading
     }
-     
+
+
 # Initiate the web scraping task
 scrape_heading_task()
 ```
@@ -163,8 +165,9 @@ After executing the script, it will:
 Now, let's explore another way to scrape the heading using the `request` module. Replace the previous code in `main.py` with the following:
 
 ```python
-from botasaurus.request import request, Request
-from botasaurus.soupify import soupify
+from botasaurus_cf_solve.request import request, Request
+from botasaurus_cf_solve.soupify import soupify
+
 
 @request
 def scrape_heading_task(request: Request, data):
@@ -173,14 +176,16 @@ def scrape_heading_task(request: Request, data):
 
     # Create a BeautifulSoup object    
     soup = soupify(response)
-    
+
     # Retrieve the heading element's text
     heading = soup.find('h1').get_text()
 
     # Save the data as a JSON file in output/scrape_heading_task.json
     return {
         "heading": heading
-    }     
+    }
+
+
 # Initiate the web scraping task
 scrape_heading_task()
 ```
@@ -226,7 +231,8 @@ Example Page: https://www.g2.com/products/github/reviews
 - Visiting the website via Google Referrer (which makes is seems as if the user has arrived from google search).
 
 ```python
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.browser import browser, Driver
+
 
 @browser
 def scrape_heading_task(driver: Driver, data):
@@ -236,13 +242,15 @@ def scrape_heading_task(driver: Driver, data):
     heading = driver.get_text('.product-head__title [itemprop="name"]')
     return heading
 
+
 scrape_heading_task()
 ```
 
 - Use the request module. The Request Object is smart and, by default, visits any link with a Google Referrer. Although it works, you will need to use retries.
 
 ```python
-from botasaurus.request import request, Request
+from botasaurus_cf_solve.request import request, Request
+
 
 @request(max_retry=10)
 def scrape_heading_task(request: Request, data):
@@ -250,6 +258,7 @@ def scrape_heading_task(request: Request, data):
     print(response.status_code)
     response.raise_for_status()
     return response.text
+
 
 scrape_heading_task()
 ```
@@ -269,7 +278,7 @@ Using `@request` does not work because although it can make browser-like HTTP re
 Pass the `bypass_cloudflare=True` argument to the `google_get` method.
 
 ```python
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.browser import browser, Driver
 
 @browser
 def scrape_heading_task(driver: Driver, data):
@@ -357,8 +366,9 @@ In `src/scrape_heading_task.py`, we define a scraping function which basically d
 4. Locates the heading element, extracts its text content and returns it.
 
 ```python
-from botasaurus.request import request, Request
-from botasaurus.soupify import soupify
+from botasaurus_cf_solve.request import request, Request
+from botasaurus_cf_solve.soupify import soupify
+
 
 @request
 def scrape_heading_task(request: Request, data):
@@ -367,7 +377,7 @@ def scrape_heading_task(request: Request, data):
 
     # Create a BeautifulSoup object    
     soup = soupify(response)
-    
+
     # Retrieve the heading element's text
     heading = soup.find('h1').get_text()
 
@@ -546,8 +556,10 @@ Decorators are the heart of Botasaurus. To use a decorator function, you can cal
 If a scraping function is given a list of items, it will sequentially call the scraping function for each data item.
 
 For example, if you pass a list of three links to the `scrape_heading_task` function:
+
 ```python
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.browser import browser, Driver
+
 
 @browser
 def scrape_heading_task(driver: Driver, link):
@@ -555,7 +567,9 @@ def scrape_heading_task(driver: Driver, link):
     heading = driver.get_text("h1")
     return heading
 
-scrape_heading_task(["https://www.omkar.cloud/", "https://www.omkar.cloud/blog/", "https://stackoverflow.com/"]) # <-- list of items
+
+scrape_heading_task(
+    ["https://www.omkar.cloud/", "https://www.omkar.cloud/blog/", "https://stackoverflow.com/"])  # <-- list of items
 ```
 
 Then, Botasaurus will launch a new browser instance for each item, and the final results will be stored in `output/scrape_heading_task.json`.
@@ -692,8 +706,9 @@ Note that using headless mode makes the browser much easier to identify by servi
 Botasaurus allows the use of ANY Chrome Extension with just 1 line of code. The example below shows how to use the AdBlocker Chrome Extension:
 
 ```python
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.browser import browser, Driver
 from chrome_extension_python import Extension
+
 
 @browser(
     extensions=[
@@ -705,6 +720,7 @@ from chrome_extension_python import Extension
 def scrape_while_blocking_ads(driver: Driver, data):
     driver.prompt()
 
+
 scrape_while_blocking_ads()
 ```
 
@@ -715,7 +731,8 @@ In some cases, an extension may require additional configuration, such as API ke
 Specify the language using the `lang` option:
 
 ```python
-from botasaurus.lang import Lang
+from botasaurus_cf_solve.lang import Lang
+
 
 @browser(
     lang=Lang.Hindi,
@@ -729,9 +746,10 @@ To make the browser really humane, Botasaurus does not change browser fingerprin
 However, if you need fingerprinting, use the `user_agent` and `window_size` options:
 
 ```python
-from botasaurus.browser import browser, Driver
-from botasaurus.user_agent import UserAgent
-from botasaurus.window_size import WindowSize
+from botasaurus_cf_solve.browser import browser, Driver
+from botasaurus_cf_solve.user_agent import UserAgent
+from botasaurus_cf_solve.window_size import WindowSize
+
 
 @browser(
     user_agent=UserAgent.RANDOM,
@@ -741,6 +759,7 @@ def visit_whatsmyua(driver: Driver, data):
     driver.get("https://www.whatsmyua.info/")
     driver.prompt()
 
+
 visit_whatsmyua()
 ```
 
@@ -749,9 +768,10 @@ When working with profiles, you want the fingerprints to remain consistent. You 
 So, when using profiles, use the `HASHED` option to generate a consistent user agent and window size based on the profile's hash:
 
 ```python
-from botasaurus.browser import browser, Driver
-from botasaurus.user_agent import UserAgent
-from botasaurus.window_size import WindowSize
+from botasaurus_cf_solve.browser import browser, Driver
+from botasaurus_cf_solve.user_agent import UserAgent
+from botasaurus_cf_solve.window_size import WindowSize
+
 
 @browser(
     profile="pikachu",
@@ -761,7 +781,8 @@ from botasaurus.window_size import WindowSize
 def visit_whatsmyua(driver: Driver, data):
     driver.get("https://www.whatsmyua.info/")
     driver.prompt()
-    
+
+
 visit_whatsmyua()
 
 # Everytime Same UserAgent and WindowSize
@@ -807,11 +828,13 @@ In such cases, you can set `wait_for_complete_page_load` to `False` to interact 
 Consider the following example:
 
 ```python
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.browser import browser, Driver
+
 
 @browser
 def scrape_data(driver: Driver, link):
     driver.get(link)
+
 
 scrape_data(["https://www.omkar.cloud/", "https://www.omkar.cloud/blog/", "https://stackoverflow.com/"])
 ```
@@ -827,13 +850,15 @@ To solve this problem, use the `reuse_driver` option which is great for cases li
 Here's how to use `reuse_driver` which will reuse the same Chrome instance for visiting each link.
 
 ```python
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.browser import browser, Driver
+
 
 @browser(
     reuse_driver=True
 )
 def scrape_data(driver: Driver, link):
     driver.get(link)
+
 
 scrape_data(["https://www.omkar.cloud/", "https://www.omkar.cloud/blog/", "https://stackoverflow.com/"])
 ```
@@ -872,18 +897,19 @@ This resulted in savings of around $1000!
 Here's an example of how you can do something similar in Botasaurus:
 
 ```python
-from botasaurus.browser import browser, Driver
-from botasaurus.soupify import soupify
+from botasaurus_cf_solve.browser import browser, Driver
+from botasaurus_cf_solve.soupify import soupify
+
 
 @browser(
     reuse_driver=True,  # Reuse the browser
-    max_retry=5,        # Retry up to 5 times on failure
+    max_retry=5,  # Retry up to 5 times on failure
 )
 def scrape_data(driver: Driver, link):
     # If the browser is newly opened, first visit the link
     if driver.config.is_new:
         driver.google_get(link, bypass_cloudflare=True)
-    
+
     # Make requests using the browser fetch API
     response = driver.requests.get(link)
     response.raise_for_status()  # Ensure the request was successful
@@ -891,10 +917,11 @@ def scrape_data(driver: Driver, link):
 
     # Parse the HTML to extract the desired data
     heading = soupify(html).select_one('.product-head__title [itemprop="name"]').get_text()
-    
+
     return {
         "heading": heading,
     }
+
 
 # List of URLs to scrape
 links = [
@@ -943,7 +970,7 @@ You can dynamically configure the browser's Chrome profile and proxy using decor
 
    Example:
    ```python
-   from botasaurus.browser import browser, Driver
+   from botasaurus_cf_solve.browser import browser, Driver
 
    def get_profile(data):
        return data["profile"]
@@ -970,7 +997,7 @@ You can dynamically configure the browser's Chrome profile and proxy using decor
 
    Example:
    ```python
-   from botasaurus.browser import browser, Driver
+   from botasaurus_cf_solve.browser import browser, Driver
 
    @browser
    def scrape_heading_task(driver: Driver, data):
@@ -992,10 +1019,12 @@ PS: Most Botasaurus decorators allow passing functions to derive configurations 
 To store data related to the active profile, use `driver.profile`. Here's an example:
 
 ```python
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.browser import browser, Driver
+
 
 def get_profile(data):
     return data["profile"]
+
 
 @browser(profile=get_profile)
 def run_profile_task(driver: Driver, data):
@@ -1017,13 +1046,14 @@ def run_profile_task(driver: Driver, data):
     # Delete the entire profile
     driver.profile = None
 
+
 run_profile_task([{"profile": "amit"}])
 ```
 
 For managing all profiles, use the `Profiles` utility. Here's an example:
 
 ```python
-from botasaurus.profiles import Profiles
+from botasaurus_cf_solve.profiles import Profiles
 
 # Set profiles
 Profiles.set_profile('amit', {'name': 'Amit Sharma', 'age': 30})
@@ -1039,7 +1069,8 @@ print(all_profiles)  # Output: [{'name': 'Amit Sharma', 'age': 30}, {'name': 'Ra
 
 # Get all profiles in random order
 random_profiles = Profiles.get_profiles(random=True)
-print(random_profiles)  # Output: [{'name': 'Rahul Verma', 'age': 30}, {'name': 'Amit Sharma', 'age': 30}] in random order
+print(
+    random_profiles)  # Output: [{'name': 'Rahul Verma', 'age': 30}, {'name': 'Amit Sharma', 'age': 30}] in random order
 
 # Delete a profile
 Profiles.delete_profile('amit')
@@ -1062,7 +1093,7 @@ Botasaurus Driver provides several handy methods for web automation tasks such a
 
 - For finding elements:
   ```python
-  from botasaurus.browser import Wait
+  from botasaurus_cf_solve.browser import Wait
   search_results = driver.select(".search-results", wait=Wait.SHORT)  # Wait for up to 4 seconds for the element to be present, return None if not found
   all_links = driver.select_all("a")  # Get all elements matching the selector
   search_results = driver.wait_for_element(".search-results", wait=Wait.LONG)  # Wait for up to 8 seconds for the element to be present, raise exception if not found
@@ -1107,7 +1138,7 @@ Botasaurus Driver provides several handy methods for web automation tasks such a
   ```
 - Execute CDP Command:
   ```python
-  from botasaurus.browser import browser, Driver, cdp
+  from botasaurus_cf_solve.browser import browser, Driver, cdp
   driver.run_cdp_command(cdp.page.navigate(url='https://stackoverflow.com/'))
   ```
 
@@ -1177,12 +1208,14 @@ You will SURELY be identified:
 However, using proxies with Botasaurus solves this issue. See the difference by running the following code:
 
 ```python
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.browser import browser, Driver
 
-@browser(proxy="http://username:password@proxy-provider-domain:port") # TODO: Replace with your own proxy 
+
+@browser(proxy="http://username:password@proxy-provider-domain:port")  # TODO: Replace with your own proxy 
 def scrape_heading_task(driver: Driver, data):
     driver.google_get("https://www.g2.com/products/github/reviews")
     driver.prompt()
+
 
 scrape_heading_task()    
 ```  
@@ -1197,12 +1230,14 @@ Important Note: To run the code above, you will need [Node.js](https://nodejs.or
 Certain proxy providers like BrightData will block access to specific websites. To determine if this is the case, run the following code:
 
 ```python
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.browser import browser, Driver
+
 
 @browser(proxy="http://username:password@proxy-provider-domain:port")  # TODO: Replace with your own proxy
 def visit_ipinfo(driver: Driver, data):
     driver.get("https://ipinfo.io/")
     driver.prompt()
+
 
 visit_ipinfo()
 ```
@@ -1276,14 +1311,17 @@ Let's dive into each of these options and in later sections we will see their re
 The `parallel` option allows you to scrape data in parallel by launching multiple browser/request/task instances simultaneously. This can significantly speed up the scraping process.
 
 Run the example below to see parallelization in action:
+
 ```python
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.browser import browser, Driver
+
 
 @browser(parallel=3, data=["https://www.omkar.cloud/", "https://www.omkar.cloud/blog/", "https://stackoverflow.com/"])
 def scrape_heading_task(driver: Driver, link):
     driver.get(link)
     heading = driver.get_text('h1')
     return heading
+
 
 scrape_heading_task()    
 ```
@@ -1294,14 +1332,17 @@ The `cache` option enables caching of web scraping results to avoid re-scraping 
 
 
 Run the example below to see how caching works:
+
 ```python
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.browser import browser, Driver
+
 
 @browser(cache=True, data=["https://www.omkar.cloud/", "https://www.omkar.cloud/blog/", "https://stackoverflow.com/"])
 def scrape_heading_task(driver: Driver, link):
     driver.get(link)
     heading = driver.get_text('h1')
     return heading
+
 
 print(scrape_heading_task())
 print(scrape_heading_task())  # Data will be fetched from cache immediately 
@@ -1316,21 +1357,24 @@ The metadata option allows you to pass common information shared across all data
 It is commonly used with caching to exclude details like API keys and browser cookies from the cache key.
 
 Here's an example of how to use the `metadata` option:
+
 ```python
-from botasaurus.task import task
+from botasaurus_cf_solve.task import task
+
 
 @task()
 def scrape_heading_task(driver: Driver, data, metadata):
     print("metadata:", metadata)
     print("data:", data)
 
+
 data = [
     {"profile": "pikachu", "proxy": "http://142.250.77.228:8000"},
     {"profile": "greyninja", "proxy": "http://142.250.77.229:8000"},
 ]
 scrape_heading_task(
-  data, 
-  metadata={"api_key": "BDEC26..."}
+    data,
+    metadata={"api_key": "BDEC26..."}
 )
 ```
 
@@ -1353,15 +1397,18 @@ A great use case for `async_queue` is scraping Google Maps. Instead of scrolling
 By executing the scrolling and requesting tasks concurrently, you can significantly speed up the scraper.
 
 Run the code below to see browser scrolling and request scraping happening concurrently (really cool, must try!):
+
 ```python
-from botasaurus.browser import browser, Driver, AsyncQueueResult
-from botasaurus.request import request, Request
+from botasaurus_cf_solve.browser import browser, Driver, AsyncQueueResult
+from botasaurus_cf_solve.request import request, Request
 import json
+
 
 def extract_title(html):
     return json.loads(
         html.split(";window.APP_INITIALIZATION_STATE=")[1].split(";window.APP_FLAGS")[0]
     )[5][3][2][1]
+
 
 @request(
     parallel=5,
@@ -1375,11 +1422,14 @@ def scrape_place_title(request: Request, link, metadata):
     print("Title:", title)
     return title
 
+
 def has_reached_end(driver):
     return driver.select('p.fontBodyMedium > span > span') is not None
 
+
 def extract_links(driver):
     return driver.get_all_links('[role="feed"] > div > div > a')
+
 
 @browser()
 def scrape_google_maps(driver: Driver, link):
@@ -1401,6 +1451,7 @@ def scrape_google_maps(driver: Driver, link):
     results = scrape_place_obj.get()  # get the scraped results from the async queue
     return results
 
+
 scrape_google_maps("https://www.google.com/maps/search/web+developers+in+bangalore")
 ```
 
@@ -1411,14 +1462,17 @@ Similarly, the `run_async` option allows you to execute scraping tasks asynchron
 Similar to `async_queue`, you can use the `.get()` method to retrieve the results of an asynchronous task.
 
 Code Example:
+
 ```python
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.browser import browser, Driver
 from time import sleep
+
 
 @browser(run_async=True)
 def scrape_heading(driver: Driver, data):
     sleep(5)
     return {}
+
 
 if __name__ == "__main__":
     result1 = scrape_heading()  # Launches asynchronously
@@ -1441,13 +1495,15 @@ The `close_on_crash` option determines the behavior of the scraper when an excep
   - Use this setting to avoid interruptions and ensure the scraper processes all data items.
 
 ```python
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.browser import browser, Driver
+
 
 @browser(
     close_on_crash=False  # Determines whether the browser is paused (default: False) or closed when an error occurs
 )
 def scrape_heading_task(driver: Driver, data):
     raise Exception("An error occurred during scraping.")
+
 
 scrape_heading_task()  
 ```
@@ -1457,67 +1513,84 @@ scrape_heading_task()
 By default, Botasaurus saves the result of scraping in the `output/{your_scraping_function_name}.json` file. Let's learn about various ways to configure the output.
 
 1. **Change Output Filename**: Use the `output` parameter in the decorator to specify a custom filename for the output.
+
 ```python
-from botasaurus.task import task
+from botasaurus_cf_solve.task import task
+
 
 @task(output="my-output")
-def scrape_heading_task(data): 
+def scrape_heading_task(data):
     return {"heading": "Hello, Mom!"}
+
 
 scrape_heading_task()
 ```
 
 2. **Disable Output**: If you don't want any output to be saved, set `output` to `None`.
+
 ```python
-from botasaurus.task import task
+from botasaurus_cf_solve.task import task
+
 
 @task(output=None)
-def scrape_heading_task(data): 
+def scrape_heading_task(data):
     return {"heading": "Hello, Mom!"}
+
 
 scrape_heading_task()
 ```
 
 3. **Dynamically Write Output**: To dynamically write output based on data and result, pass a function to the `output` parameter:
+
 ```python
-from botasaurus.task import task
-from botasaurus import bt
+from botasaurus_cf_solve.task import task
+from botasaurus_cf_solve import bt
+
 
 def write_output(data, result):
     json_filename = bt.write_json(result, 'data')
     excel_filename = bt.write_excel(result, 'data')
-    bt.zip_files([json_filename, excel_filename]) # Zip the JSON and Excel files for easy delivery to the customer
+    bt.zip_files([json_filename, excel_filename])  # Zip the JSON and Excel files for easy delivery to the customer
 
-@task(output=write_output)  
-def scrape_heading_task(data): 
+
+@task(output=write_output)
+def scrape_heading_task(data):
     return {"heading": "Hello, Mom!"}
+
 
 scrape_heading_task()
 ```
 
 4. **Upload File to S3**: Use `bt.upload_to_s3` to upload file to S3 bucket.
+
 ```python
-from botasaurus.task import task
-from botasaurus import bt
+from botasaurus_cf_solve.task import task
+from botasaurus_cf_solve import bt
+
 
 def write_output(data, result):
     json_filename = bt.write_json(result, 'data')
     bt.upload_to_s3(json_filename, 'my-magical-bucket', "AWS_ACCESS_KEY", "AWS_SECRET_KEY")
 
-@task(output=write_output)  
-def scrape_heading_task(data): 
+
+@task(output=write_output)
+def scrape_heading_task(data):
     return {"heading": "Hello, Mom!"}
+
 
 scrape_heading_task()
 ```
 
 5.**Save Outputs in Multiple Formats**: Use the `output_formats` parameter to save outputs in different formats like JSON and EXCEL.
-```python
-from botasaurus.task import task
 
-@task(output_formats=[bt.Formats.JSON, bt.Formats.EXCEL])  
-def scrape_heading_task(data): 
+```python
+from botasaurus_cf_solve.task import task
+
+
+@task(output_formats=[bt.Formats.JSON, bt.Formats.EXCEL])
+def scrape_heading_task(data):
     return {"heading": "Hello, Mom!"}
+
 
 scrape_heading_task()
 ```
@@ -1560,8 +1633,9 @@ The `bt` utility provides helper functions for:
 Some key functions are:
 
 - `bt.write_json` and `bt.read_json`: Easily write and read JSON files.
+
 ```python
-from botasaurus import bt
+from botasaurus_cf_solve import bt
 
 data = {"name": "pikachu", "power": 101}
 bt.write_json(data, "output")
@@ -1569,8 +1643,9 @@ loaded_data = bt.read_json("output")
 ```
 
 - `bt.write_excel` and `bt.read_excel`: Easily write and read EXCEL files.
+
 ```python
-from botasaurus import bt
+from botasaurus_cf_solve import bt
 
 data = {"name": "pikachu", "power": 101}
 bt.write_excel(data, "output")
@@ -1578,8 +1653,9 @@ loaded_data = bt.read_excel("output")
 ```
 
 - `bt.write_csv` and `bt.read_csv`: Easily write and read CSV files.
+
 ```python
-from botasaurus import bt
+from botasaurus_cf_solve import bt
 
 data = {"name": "pikachu", "power": 101}
 bt.write_csv(data, "output")
@@ -1587,16 +1663,18 @@ loaded_data = bt.read_csv("output")
 ```
 
 - `bt.write_html` and `bt.read_html`: Write HTML content to a file.
+
 ```python
-from botasaurus import bt
+from botasaurus_cf_solve import bt
 
 html_content = "<html><body><h1>Hello, Mom!</h1></body></html>"
 bt.write_html(html_content, "output")
 ```
 
 - `bt.write_temp_json`, `bt.write_temp_csv`, `bt.write_temp_html`: Write temporary JSON, CSV, or HTML files for debugging purposes.
+
 ```python
-from botasaurus import bt
+from botasaurus_cf_solve import bt
 
 data = {"name": "pikachu", "power": 101}
 bt.write_temp_json(data)
@@ -1618,7 +1696,7 @@ The Local Storage utility allows you to store and retrieve key-value pairs, whic
 Here's how to use it:
 
 ```python
-from botasaurus.local_storage import LocalStorage
+from botasaurus_cf_solve.local_storage import LocalStorage
 
 LocalStorage.set_item("credits_used", 100)
 print(LocalStorage.get_item("credits_used", 0))
@@ -1629,36 +1707,39 @@ print(LocalStorage.get_item("credits_used", 0))
 The `soupify` utility creates a BeautifulSoup object from a Driver, Requests response, Driver Element, or HTML string.
 
 ```python
-from botasaurus.soupify import soupify
-from botasaurus.request import request, Request
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.soupify import soupify
+from botasaurus_cf_solve.request import request, Request
+from botasaurus_cf_solve.browser import browser, Driver
+
 
 @request
 def get_heading_from_request(req: Request, data):
-   """
-   Get the heading of a web page using the request object.
-   """
-   response = req.get("https://www.example.com")
-   soup = soupify(response)
-   heading = soup.find("h1").text
-   print(f"Page Heading: {heading}")
+    """
+    Get the heading of a web page using the request object.
+    """
+    response = req.get("https://www.example.com")
+    soup = soupify(response)
+    heading = soup.find("h1").text
+    print(f"Page Heading: {heading}")
+
 
 @browser
 def get_heading_from_driver(driver: Driver, data):
-   """
-   Get the heading of a web page using the driver object.
-   """
-   driver.get("https://www.example.com")
+    """
+    Get the heading of a web page using the driver object.
+    """
+    driver.get("https://www.example.com")
 
-   # Get the heading from the entire page
-   page_soup = soupify(driver)
-   page_heading = page_soup.find("h1").text
-   print(f"Heading from Driver's Soup: {page_heading}")
+    # Get the heading from the entire page
+    page_soup = soupify(driver)
+    page_heading = page_soup.find("h1").text
+    print(f"Heading from Driver's Soup: {page_heading}")
 
-   # Get the heading from the body element
-   body_soup = soupify(driver.select("body"))
-   body_heading = body_soup.find("h1").text
-   print(f"Heading from Element's Soup: {body_heading}")
+    # Get the heading from the body element
+    body_soup = soupify(driver.select("body"))
+    body_heading = body_soup.find("h1").text
+    print(f"Heading from Element's Soup: {body_heading}")
+
 
 # Call the functions
 get_heading_from_request()
@@ -1670,7 +1751,7 @@ get_heading_from_driver()
 IP Utils provide functions to get information about the current IP address, such as the IP itself, country, ISP, and more:
 
 ```python
-from botasaurus.ip_utils import IPUtils
+from botasaurus_cf_solve.ip_utils import IPUtils
 
 # Get the current IP address
 current_ip = IPUtils.get_ip()
@@ -1700,14 +1781,16 @@ The Cache utility in Botasaurus allows you to manage cached data for your scrape
 *Basic Usage*
 
 ```python
-from botasaurus.task import task
-from botasaurus.cache import Cache
+from botasaurus_cf_solve.task import task
+from botasaurus_cf_solve.cache import Cache
+
 
 # Example scraping function
 @task
 def scrape_data(data):
     # Your scraping logic here
     return {"processed": data}
+
 
 # Sample data for scraping
 input_data = {"key": "value"}
@@ -1735,7 +1818,7 @@ Cache.clear('scrape_data')
 You can count the number of items cached for a particular function, which can serve as a scraping progress bar.
 
 ```python
-from botasaurus.cache import Cache
+from botasaurus_cf_solve.cache import Cache
 
 Cache.print_cached_items_count('scraping_function')
 ```
@@ -1745,7 +1828,7 @@ Cache.print_cached_items_count('scraping_function')
 You can filter items that have been cached or not cached for a particular function.
 
 ```python
-from botasaurus.cache import Cache
+from botasaurus_cf_solve.cache import Cache
 
 all_items = ['1', '2', '3', '4', '5']
 
@@ -1769,7 +1852,7 @@ The cache for a function is stored in the `cache/{your_scraping_function_name}/`
 You can delete specific items from the cache for a particular function.
 
 ```python
-from botasaurus.cache import Cache
+from botasaurus_cf_solve.cache import Cache
 
 all_items = ['1', '2', '3', '4', '5']
 deleted_count = Cache.delete_items('scraping_function', all_items)
@@ -1794,17 +1877,19 @@ Cache.delete_items_by_filter('scraping_function', all_items, should_delete_item)
 Importantly, be cautious and first use `delete_items_by_filter` on a small set of items which you want to be deleted. Here's an example:
 
 ```python
-from botasaurus import bt
-from botasaurus.cache import Cache
+from botasaurus_cf_solve import bt
+from botasaurus_cf_solve.cache import Cache
+
 
 def should_delete_item(item, result):
     # TODO: Update the logic
     if 'Honeypot Item' in result:
-        return True # Delete the item
-    return False # Don't delete the item
+        return True  # Delete the item
+    return False  # Don't delete the item
 
-test_items = ['1', '2'] # TODO: update with target items
-scraping_function_name = 'scraping_function' # TODO:  update with target scraping function name
+
+test_items = ['1', '2']  # TODO: update with target items
+scraping_function_name = 'scraping_function'  # TODO:  update with target scraping function name
 Cache.delete_items_by_filter(scraping_function_name, test_items, should_delete_item)
 
 for item in test_items:
@@ -1826,8 +1911,8 @@ The Botasaurus Sitemap Module makes this process easy as cake by allowing you to
 For example, if you're an Angel Investor seeking innovative tech startups to invest, G2 is an ideal platform to find such startups. You can run the following code to fetch over 160K+ product links from G2:
 
 ```python
-from botasaurus import bt
-from botasaurus.sitemap import Sitemap, Filters, Extractors
+from botasaurus_cf_solve import bt
+from botasaurus_cf_solve.sitemap import Sitemap, Filters, Extractors
 
 links = (
     Sitemap("https://www.g2.com/sitemaps/sitemap_index.xml.gz")
@@ -1844,15 +1929,17 @@ links = (
 Or, let's say you're in the mood for some reading and looking for good stories. The following code will get you over 1000+  from [moralstories26.com](https://moralstories26.com/):
 
 ```python
-from botasaurus import bt
-from botasaurus.sitemap import Sitemap, Filters
+from botasaurus_cf_solve import bt
+from botasaurus_cf_solve.sitemap import Sitemap, Filters
 
 links = (
     Sitemap("https://moralstories26.com/")
     .filter(
         Filters.has_exactly_1_segment(),
         Filters.first_segment_not_equals(
-            ["about", "privacy-policy", "akbar-birbal", "animal", "education", "fables", "facts", "family", "famous-personalities", "folktales", "friendship", "funny", "heartbreaking", "inspirational", "life", "love", "management", "motivational", "mythology", "nature", "quotes", "spiritual", "uncategorized", "zen"]
+            ["about", "privacy-policy", "akbar-birbal", "animal", "education", "fables", "facts", "family",
+             "famous-personalities", "folktales", "friendship", "funny", "heartbreaking", "inspirational", "life",
+             "love", "management", "motivational", "mythology", "nature", "quotes", "spiritual", "uncategorized", "zen"]
         ),
     )
     .write_links('moral-stories')
@@ -1866,8 +1953,8 @@ links = (
 Also, before scraping a site, it's useful to identify the available sitemaps. This can be easily done with the following code:
 
 ```python
-from botasaurus import bt
-from botasaurus.sitemap import Sitemap
+from botasaurus_cf_solve import bt
+from botasaurus_cf_solve.sitemap import Sitemap
 
 sitemaps = Sitemap("https://www.omkar.cloud/").write_sitemaps('omkar-sitemaps')
 ```
@@ -1876,15 +1963,15 @@ sitemaps = Sitemap("https://www.omkar.cloud/").write_sitemaps('omkar-sitemaps')
 
 ![omkar-sitemap-links.png](https://raw.githubusercontent.com/omkarcloud/botasaurus/master/images/omkar-sitemap-links.png)
 
-To ensure your scrapers run super fast, we cache the Sitemap, but you may want to periodically refresh the cache. To do so, pass the Cache.REFRESH parameter. 
+To ensure your scrapers run super fast, we cache the Sitemap, but you may want to periodically refresh the cache. To do so, pass the Cache.REFRESH parameter.
 
 ```python
-from botasaurus import bt
-from botasaurus.sitemap import Sitemap, Filters, Extractors
-from botasaurus.cache import Cache
+from botasaurus_cf_solve import bt
+from botasaurus_cf_solve.sitemap import Sitemap, Filters, Extractors
+from botasaurus_cf_solve.cache import Cache
 
 links = (
-    Sitemap("https://www.g2.com/sitemaps/sitemap_index.xml.gz", cache=Cache.REFRESH) # Refresh the cache
+    Sitemap("https://www.g2.com/sitemaps/sitemap_index.xml.gz", cache=Cache.REFRESH)  # Refresh the cache
     .filter(Filters.first_segment_equals("products"))
     .extract(Extractors.extract_link_upto_second_segment())
     .write_links('g2-products')
@@ -1898,13 +1985,13 @@ Filtering links from a webpage is a common requirement in web scraping. For exam
 Botasaurus's `Links` module simplifies link filtering and extraction:
 
 ```python
-from botasaurus.links import Links, Filters, Extractors
+from botasaurus_cf_solve.links import Links, Filters, Extractors
 
 # Sample list of links
 links = [
     "https://www.g2.com/categories/project-management",
-    "https://www.g2.com/categories/payroll", 
-    "https://www.g2.com/products/jenkins/reviews", 
+    "https://www.g2.com/categories/payroll",
+    "https://www.g2.com/products/jenkins/reviews",
     "https://www.g2.com/products/redis-software/pricing"
 ]
 
@@ -1922,22 +2009,24 @@ filtered_links = (
 Sadly, when using caching, most developers write a scraping function that scrapes the HTML and extracts the data from the HTML in the same function, like this:
 
 ```python
-from botasaurus.request import request, Request
-from botasaurus.soupify import soupify
+from botasaurus_cf_solve.request import request, Request
+from botasaurus_cf_solve.soupify import soupify
+
 
 @request
 def scrape_data(request: Request, data):
     # Visit the Link
     response = request.get(data)
-    
+
     # Create a BeautifulSoup object
     soup = soupify(response)
-    
+
     # Retrieve the heading element's text
     heading = soup.find('h1').get_text()
-    
+
     # Save the data as a JSON file in output/scrape_data.json
     return {"heading": heading}
+
 
 data_items = [
     "https://www.omkar.cloud/",
@@ -1962,9 +2051,10 @@ Here's a practical example:
 
 ```python
 from bs4 import BeautifulSoup
-from botasaurus.task import task
-from botasaurus.request import request, Request
-from botasaurus.soupify import soupify
+from botasaurus_cf_solve.task import task
+from botasaurus_cf_solve.request import request, Request
+from botasaurus_cf_solve.soupify import soupify
+
 
 @request(cache=True)
 def scrape_html(request: Request, link):
@@ -1972,10 +2062,12 @@ def scrape_html(request: Request, link):
     html = request.get(link).text
     return html
 
+
 def extract_data(soup: BeautifulSoup):
     # Extract the heading from the HTML
     heading = soup.find("h1").get_text()
     return {"heading": heading}
+
 
 # Cache the scrape_data task as well
 @task(cache=True)
@@ -1984,6 +2076,7 @@ def scrape_data(link):
     html = scrape_html(link)
     # Extract data from the HTML using the extract_data function
     return extract_data(soupify(html))
+
 
 data_items = [
     "https://www.omkar.cloud/",
@@ -2003,11 +2096,13 @@ With this approach:
 
 ```python
 from bs4 import BeautifulSoup
-from botasaurus import bt
+from botasaurus_cf_solve import bt
+
 
 def extract_data(soup: BeautifulSoup):
     heading = soup.find('h1').get_text()
     return {"heading": heading}
+
 
 if __name__ == '__main__':
     # Will use the cached HTML and run the extract_data function again.
@@ -2021,15 +2116,16 @@ Here's a template for creating production-ready datasets using the `Request` mod
 
 ```python
 from bs4 import BeautifulSoup
-from botasaurus.task import task
-from botasaurus.request import request, Request,NotFoundException
-from botasaurus.soupify import soupify
+from botasaurus_cf_solve.task import task
+from botasaurus_cf_solve.request import request, Request, NotFoundException
+from botasaurus_cf_solve.soupify import soupify
+
 
 @request(
     # proxy='http://username:password@datacenter-proxy-domain:proxy-port', # Uncomment to use Proxy ONLY if you face IP blocking
     cache=True,
 
-    max_retry=20, # Retry up to 20 times, which is a good default
+    max_retry=20,  # Retry up to 20 times, which is a good default
 
     output=None,
 
@@ -2046,23 +2142,26 @@ def scrape_html(request: Request, link):
     response.raise_for_status()
     return response.text
 
+
 def extract_data(soup: BeautifulSoup):
     # Extract the heading from the HTML
     heading = soup.find("h1").get_text()
     return {"heading": heading}
+
 
 # Cache the scrape_data task as well
 @task(
     cache=True,
     close_on_crash=True,
     create_error_logs=False,
-    parallel=40, # Run 40 requests in parallel, which is a good default
+    parallel=40,  # Run 40 requests in parallel, which is a good default
 )
 def scrape_data(link):
     # Call the scrape_html function to get the cached HTML
     html = scrape_html(link)
     # Extract data from the HTML using the extract_data function
     return extract_data(soupify(html))
+
 
 data_items = [
     "https://www.omkar.cloud/",
@@ -2079,9 +2178,10 @@ Here's a template for creating production-ready datasets using the `Browser` mod
 
 ```python
 from bs4 import BeautifulSoup
-from botasaurus.task import task
-from botasaurus.browser import browser, Driver, NotFoundException
-from botasaurus.soupify import soupify
+from botasaurus_cf_solve.task import task
+from botasaurus_cf_solve.browser import browser, Driver, NotFoundException
+from botasaurus_cf_solve.soupify import soupify
+
 
 @browser(
     # proxy='http://username:password@datacenter-proxy-domain:proxy-port', # Uncomment to use Proxy ONLY if you face IP blocking
@@ -2092,8 +2192,8 @@ from botasaurus.soupify import soupify
     cache=True,
     max_retry=5,  # Retry up to 5 times, which is a good default
 
-    reuse_driver= True, # Reuse the same driver for all tasks
-    
+    reuse_driver=True,  # Reuse the same driver for all tasks
+
     output=None,
 
     close_on_crash=True,
@@ -2108,19 +2208,21 @@ def scrape_html(driver: Driver, link):
             bypass_cloudflare=True,  # delete this line if the website you're accessing is not protected by Cloudflare
         )
     response = driver.requests.get(link)
-    
+
     if response.status_code == 404:
         # A Special Exception to skip retrying this link
         raise NotFoundException(link)
     response.raise_for_status()
-    
-    html = response.text        
+
+    html = response.text
     return html
+
 
 def extract_data(soup: BeautifulSoup):
     # Extract the heading from the HTML
     heading = soup.select_one('.product-head__title [itemprop="name"]').get_text()
     return {"heading": heading}
+
 
 # Cache the scrape_data task as well
 @task(
@@ -2133,6 +2235,7 @@ def scrape_data(link):
     html = scrape_html(link)
     # Extract data from the HTML using the extract_data function
     return extract_data(soupify(html))
+
 
 data_items = [
     "https://www.g2.com/products/stack-overflow-for-teams/reviews?page=8",

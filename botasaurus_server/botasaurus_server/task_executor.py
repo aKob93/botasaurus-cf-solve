@@ -11,7 +11,7 @@ from .task_helper import TaskHelper
 from .scraper_type import ScraperType
 from .retry_on_db_error import retry_on_db_error
 from .task_results import TaskResults
-from botasaurus.dontcache import is_dont_cache
+from botasaurus_cf_solve.dontcache import is_dont_cache
 
 class TaskExecutor:
 

@@ -53,13 +53,14 @@ code .  # This will open the project in VSCode if you have it installed
 Now, create a Python script named `main.py` in your project directory and insert the following code:
 
 ```python
-from botasaurus import bt
+from botasaurus_cf_solve import bt
+
 
 @browser
 def scrape_heading_task(driver: AntiDetectDriver, data):
     # Navigate to the Omkar Cloud website
     driver.get("https://www.omkar.cloud/")
-    
+
     # Retrieve the heading element's text
     heading = driver.text("h1")
 
@@ -67,7 +68,8 @@ def scrape_heading_task(driver: AntiDetectDriver, data):
     return {
         "heading": heading
     }
-     
+
+
 if __name__ == "__main__":
     # Initiate the web scraping task
     scrape_heading_task()
@@ -121,13 +123,14 @@ After executing the script, it will:
 Now, let’s explore another way to scrape the heading using the `request` module. Replace the previous code in `main.py` with the following:
 
 ```python
-from botasaurus import *
+from botasaurus_cf_solve import *
+
 
 @request
 def scrape_heading_task(request: AntiDetectRequests, data):
     # Navigate to the Omkar Cloud website
     soup = request.bs4("https://www.omkar.cloud/")
-    
+
     # Retrieve the heading element's text
     heading = soup.find('h1').get_text()
 
@@ -135,7 +138,8 @@ def scrape_heading_task(request: AntiDetectRequests, data):
     return {
         "heading": heading
     }
-     
+
+
 if __name__ == "__main__":
     # Initiate the web scraping task
     scrape_heading_task()
@@ -581,14 +585,16 @@ if __name__ == "__main__":
 You can use The Cache Module in Botasaurus to easily manage cached data. Here's a simple example explaining its usage:
 
 ```python
-from botasaurus import *
-from botasaurus.cache import Cache
+from botasaurus_cf_solve import *
+from botasaurus_cf_solve.cache import Cache
+
 
 # Example scraping function
 @request
 def scrape_data(data):
     # Your scraping logic here
     return {"processed": data}
+
 
 # Sample data for scraping
 input_data = {"key": "value"}

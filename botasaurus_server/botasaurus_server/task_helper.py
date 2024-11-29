@@ -3,7 +3,7 @@ from sqlalchemy import update
 from .db_setup import Session
 from .cleaners import normalize_dicts_by_fieldnames
 from .task_results import TaskResults
-from botasaurus import bt
+from botasaurus_cf_solve import bt
 from .models import Task, TaskStatus, remove_duplicates_by_key
 from .db_setup import Session
 

@@ -17,14 +17,16 @@
 2. Next, test Botasaurus by running this code snippet:
 
 ```python
-from botasaurus.browser import browser, Driver
+from botasaurus_cf_solve.browser import browser, Driver
+
 
 @browser
 def scrape_heading_task(driver: Driver, data):
-    driver.google_get("https://www.g2.com/products/jenkins/reviews?page=5", bypass_cloudflare=True)
-    heading = driver.get_text('.product-head__title [itemprop="name"]')
-    driver.save_screenshot()
-    return heading
+  driver.google_get("https://www.g2.com/products/jenkins/reviews?page=5", bypass_cloudflare=True)
+  heading = driver.get_text('.product-head__title [itemprop="name"]')
+  driver.save_screenshot()
+  return heading
+
 
 scrape_heading_task()
 ```
@@ -36,30 +38,31 @@ scrape_heading_task()
 Let's say your scraping function returns data in the following format:
 
 ```python
-from botasaurus.task import task
+from botasaurus_cf_solve.task import task
+
 
 @task
 def scrape_product_data(data):
-    return [
-        {
-            "id": 1,
-            "name": "T-Shirt",
-            "price": 16,  # in US Dollar
-            "reviews": 1000,
-            "is_available": True,
-            "category": "apparel",
-            "tags": ["cotton", "casual"]
-        },
-        {
-            "id": 2,
-            "name": "Laptop",
-            "price": 700,
-            "reviews": 500,
-            "is_available": False,
-            "category": "electronics",
-            "tags": ["computer", "portable"]
-        }
-    ]
+  return [
+    {
+      "id": 1,
+      "name": "T-Shirt",
+      "price": 16,  # in US Dollar
+      "reviews": 1000,
+      "is_available": True,
+      "category": "apparel",
+      "tags": ["cotton", "casual"]
+    },
+    {
+      "id": 2,
+      "name": "Laptop",
+      "price": 700,
+      "reviews": 500,
+      "is_available": False,
+      "category": "electronics",
+      "tags": ["computer", "portable"]
+    }
+  ]
 ```
 
 Now, let's say you want to add filters to allow users to:
@@ -282,62 +285,63 @@ Also, you can add a lot of other sorts as shown below:
 Let's say your scraping function returns data in the following format:
 
 ```python
-from botasaurus.task import task
+from botasaurus_cf_solve.task import task
+
 
 @task
 def scrape_product_data(data):
-    return [
+  return [
+    {
+      "id": 1,
+      "name": "T-Shirt",
+      "price": 16,  # in US Dollar
+      "reviews": 1000,
+      "reviews_per_rating": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 100,
+        "5": 900
+      },
+      "featured_reviews": [
         {
-            "id": 1,
-            "name": "T-Shirt",
-            "price": 16, # in US Dollar
-            "reviews": 1000,
-            "reviews_per_rating": {
-                "1": 0,
-                "2": 0,
-                "3": 0,
-                "4": 100,
-                "5": 900
-            },
-            "featured_reviews": [
-                {
-                    "id": 1,
-                    "rating": 5,
-                    "content": "Awesome t-shirt!",
-                },
-                {
-                    "id": 2,
-                    "rating": 5,
-                    "content": "Amazing t-shirt!"
-                }
-            ],
+          "id": 1,
+          "rating": 5,
+          "content": "Awesome t-shirt!",
         },
         {
-            "id": 2,
-            "name": "Laptop",
-            "price": 700,
-            "reviews": 500,
-            "reviews_per_rating": {
-                 "1": 0,
-                "2": 0,
-                "3": 0,
-                "4": 100,
-                "5": 400
-            },
-            "featured_reviews": [
-                {
-                    "id": 1,
-                    "rating": 5,
-                    "content": "Best laptop ever!",
-                },
-                {
-                    "id": 2,
-                    "rating": 5,
-                    "content": "Great laptop!"
-                }
-            ],
+          "id": 2,
+          "rating": 5,
+          "content": "Amazing t-shirt!"
         }
-    ]
+      ],
+    },
+    {
+      "id": 2,
+      "name": "Laptop",
+      "price": 700,
+      "reviews": 500,
+      "reviews_per_rating": {
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 100,
+        "5": 400
+      },
+      "featured_reviews": [
+        {
+          "id": 1,
+          "rating": 5,
+          "content": "Best laptop ever!",
+        },
+        {
+          "id": 2,
+          "rating": 5,
+          "content": "Great laptop!"
+        }
+      ],
+    }
+  ]
 ```
 
 Now, To provide your Customer with the best experience, you should present this data in multiple views like:
@@ -501,106 +505,111 @@ Now to meet this requirement, instead of manually picking and flattening fields,
 
 ```python
 from botasaurus_server.ui import View, Field, ExpandDictField
-from botasaurus.task import task
-from botasaurus import bt
+from botasaurus_cf_solve.task import task
+from botasaurus_cf_solve import bt
 
 products = [
-    {
+  {
+    "id": 1,
+    "name": "T-Shirt",
+    "price": 16,  # in US Dollar
+    "reviews": 1000,
+    "reviews_per_rating": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 100,
+      "5": 900,
+    },
+    "featured_reviews": [
+      {
         "id": 1,
-        "name": "T-Shirt",
-        "price": 16,  # in US Dollar
-        "reviews": 1000,
-        "reviews_per_rating": {
-            "1": 0,
-            "2": 0, 
-            "3": 0,
-            "4": 100,
-            "5": 900,
-        },
-        "featured_reviews": [
-            {
-                "id": 1,
-                "rating": 5,
-                "content": "Awesome t-shirt!",
-            },
-            {
-                "id": 2,
-                "rating": 5,
-                "content": "Amazing t-shirt!",
-            },
-        ],
-    },
-    {
+        "rating": 5,
+        "content": "Awesome t-shirt!",
+      },
+      {
         "id": 2,
-        "name": "Laptop",
-        "price": 700,
-        "reviews": 500,
-        "reviews_per_rating": {
-            "1": 0,
-            "2": 0,
-            "3": 0,
-            "4": 100,
-            "5": 400,
-        },
-        "featured_reviews": [
-            {
-                "id": 1,
-                "rating": 5,
-                "content": "Best laptop ever!",
-            },
-            {
-                "id": 2,
-                "rating": 5,
-                "content": "Great laptop!",
-            },
-        ],
+        "rating": 5,
+        "content": "Amazing t-shirt!",
+      },
+    ],
+  },
+  {
+    "id": 2,
+    "name": "Laptop",
+    "price": 700,
+    "reviews": 500,
+    "reviews_per_rating": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 100,
+      "5": 400,
     },
+    "featured_reviews": [
+      {
+        "id": 1,
+        "rating": 5,
+        "content": "Best laptop ever!",
+      },
+      {
+        "id": 2,
+        "rating": 5,
+        "content": "Great laptop!",
+      },
+    ],
+  },
 ]
+
 
 # Function to calculate the average rating
 def calculate_average_rating(value, record):
-    total_reviews = sum(value.values())
-    if total_reviews == 0:
-        return 0
-    rating_sum = 0
-    for rating, count in value.items():
-        rating_sum += int(rating) * count
-    return rating_sum / total_reviews
+  total_reviews = sum(value.values())
+  if total_reviews == 0:
+    return 0
+  rating_sum = 0
+  for rating, count in value.items():
+    rating_sum += int(rating) * count
+  return rating_sum / total_reviews
+
 
 # Define the "Overview" view
 overview_view = View(
-    "Overview",
-    fields=[
-        Field("id"),
-        Field("name"),
-        Field("price"),
-        Field("reviews"),
-        Field(
-            "reviews_per_rating",
-            output_key="average_rating",
-            map=calculate_average_rating,
-        ),
-        ExpandDictField(
-            "reviews_per_rating",
-            fields=[
-                Field("1", output_key="rating_1"),
-                Field("2", output_key="rating_2"),
-                Field("3", output_key="rating_3"),
-                Field("4", output_key="rating_4"),
-                Field("5", output_key="rating_5"),
-            ],
-        ),
-    ],
+  "Overview",
+  fields=[
+    Field("id"),
+    Field("name"),
+    Field("price"),
+    Field("reviews"),
+    Field(
+      "reviews_per_rating",
+      output_key="average_rating",
+      map=calculate_average_rating,
+    ),
+    ExpandDictField(
+      "reviews_per_rating",
+      fields=[
+        Field("1", output_key="rating_1"),
+        Field("2", output_key="rating_2"),
+        Field("3", output_key="rating_3"),
+        Field("4", output_key="rating_4"),
+        Field("5", output_key="rating_5"),
+      ],
+    ),
+  ],
 )
 
-def write_output(input_data, result):
-    # Apply the "Overview" view to the data
-    bt.write_excel(overview_view.apply(result), 'overview')
-    bt.write_json(result, 'products')
 
-@task(output=write_output)  
+def write_output(input_data, result):
+  # Apply the "Overview" view to the data
+  bt.write_excel(overview_view.apply(result), 'overview')
+  bt.write_json(result, 'products')
+
+
+@task(output=write_output)
 def scrape_product_data(data):
-    return products
+  return products
+
 
 scrape_product_data()
 ```
@@ -611,72 +620,75 @@ Similarly, you can apply sorting to the data as follows:
 
 ```python
 from botasaurus_server.ui import sorts
-from botasaurus.task import task
-from botasaurus import bt
+from botasaurus_cf_solve.task import task
+from botasaurus_cf_solve import bt
 
 products = [
-    {
+  {
+    "id": 1,
+    "name": "T-Shirt",
+    "price": 16,  # in US Dollar
+    "reviews": 1000,
+    "reviews_per_rating": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 100,
+      "5": 900,
+    },
+    "featured_reviews": [
+      {
         "id": 1,
-        "name": "T-Shirt",
-        "price": 16,  # in US Dollar
-        "reviews": 1000,
-        "reviews_per_rating": {
-            "1": 0,
-            "2": 0,
-            "3": 0,
-            "4": 100,
-            "5": 900,
-        },
-        "featured_reviews": [
-            {
-                "id": 1,
-                "rating": 5,
-                "content": "Awesome t-shirt!",
-            },
-            {
-                "id": 2,
-                "rating": 5,
-                "content": "Amazing t-shirt!",
-            },
-        ],
-    },
-    {
+        "rating": 5,
+        "content": "Awesome t-shirt!",
+      },
+      {
         "id": 2,
-        "name": "Laptop",
-        "price": 700,
-        "reviews": 500,
-        "reviews_per_rating": {
-            "1": 0,
-            "2": 0,
-            "3": 0,
-            "4": 100,
-            "5": 400,
-        },
-        "featured_reviews": [
-            {
-                "id": 1,
-                "rating": 5,
-                "content": "Best laptop ever!",
-            },
-            {
-                "id": 2,
-                "rating": 5,
-                "content": "Great laptop!",
-            },
-        ],
+        "rating": 5,
+        "content": "Amazing t-shirt!",
+      },
+    ],
+  },
+  {
+    "id": 2,
+    "name": "Laptop",
+    "price": 700,
+    "reviews": 500,
+    "reviews_per_rating": {
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 100,
+      "5": 400,
     },
+    "featured_reviews": [
+      {
+        "id": 1,
+        "rating": 5,
+        "content": "Best laptop ever!",
+      },
+      {
+        "id": 2,
+        "rating": 5,
+        "content": "Great laptop!",
+      },
+    ],
+  },
 ]
 
+
 def write_output(input_data, result):
-    sort = sorts.AlphabeticAscendingSort("name")
+  sort = sorts.AlphabeticAscendingSort("name")
 
-    # Sort the data by the "name" field in alphabetical ascending order
-    bt.write_json(sort.apply(result), 'sorted')
-    bt.write_json(result, 'products')
+  # Sort the data by the "name" field in alphabetical ascending order
+  bt.write_json(sort.apply(result), 'sorted')
+  bt.write_json(result, 'products')
 
-@task(output=write_output)  
+
+@task(output=write_output)
 def scrape_product_data(data):
-    return products
+  return products
+
 
 scrape_product_data()
 ```
