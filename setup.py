@@ -1,5 +1,6 @@
 from setuptools import setup, find_packages
 
+# Основные зависимости
 install_requires = [
     "psutil",    
     "javascript_fixes",
@@ -8,37 +9,28 @@ install_requires = [
     "beautifulsoup4>=4.11.2",
     "lxml>=5.2.2",
     "openpyxl",
-    "close_chrome",
-    "botasaurus-api",
-    "botasaurus-driver-cf-solve",
-    "bota",
-    "botasaurus-proxy-authentication",
-    "botasaurus-requests"
 ]
+
+# Опциональные зависимости
 extras_require = {}
+
+# Зависимости для CPython
 cpython_dependencies = [
     "PyDispatcher>=2.0.5",
 ]
 
-
+# Функция для загрузки описания из README.md
 def get_description():
     try:
         with open("README.md", encoding="utf-8") as readme_file:
-            long_description = readme_file.read()
-        return long_description
+            return readme_file.read()
     except:
         return None
 
 setup(
     name="botasaurus_cf_solve",
-    packages=find_packages(include=["botasaurus_cf_solve", "botasaurus_cf_solve.*"]),
     version='4.0.60',
     license="MIT",
-    project_urls={
-        "Documentation": "https://omkar.cloud/botasaurus/",
-        "Source": "https://github.com/omkarcloud/botasaurus",
-        "Tracker": "https://github.com/omkarcloud/botasaurus/issues",
-    },
     description="The All in One Web Scraping Framework",
     long_description_content_type="text/markdown",
     long_description=get_description(),
@@ -46,20 +38,20 @@ setup(
     author_email="chetan@omkar.cloud",
     maintainer="Chetan Jain",
     maintainer_email="chetan@omkar.cloud",
-    keywords=[
-        "crawler",
-        "framework",
-        "scraping",
-        "crawling",
-        "web-scraping",
-        "web-scraping-python",
-        "cloudflare-bypass",
-        "anti-detection",
-        "bot-detection",
-        "automation",
-        "webdriver",
-        "browser",
-    ],
+    python_requires=">=3.7",
+
+    # Автоматически обнаруживаем все пакеты в репозитории
+    packages=find_packages(),
+
+    install_requires=install_requires,
+    extras_require=extras_require,
+
+    project_urls={
+        "Documentation": "https://omkar.cloud/botasaurus/",
+        "Source": "https://github.com/omkarcloud/botasaurus",
+        "Tracker": "https://github.com/omkarcloud/botasaurus/issues",
+    },
+
     classifiers=[
         "Framework :: Scrapy",
         "Development Status :: 5 - Production/Stable",
@@ -80,7 +72,19 @@ setup(
         "Topic :: Software Development :: Libraries :: Application Frameworks",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
-    python_requires=">=3.7",
-    install_requires=install_requires,
-    extras_require=extras_require,
+
+    keywords=[
+        "crawler",
+        "framework",
+        "scraping",
+        "crawling",
+        "web-scraping",
+        "web-scraping-python",
+        "cloudflare-bypass",
+        "anti-detection",
+        "bot-detection",
+        "automation",
+        "webdriver",
+        "browser",
+    ],
 )
