@@ -31,7 +31,7 @@ def get_description():
 
 setup(
     name="botasaurus_cf_solve",
-    packages=find_packages(include=["botasaurus_cf_solve.botasaurus_cf_solve", "botasaurus_cf_solve.botasaurus_cf_solve.*", "botasaurus_cf_solve.botasaurus_api", "botasaurus_cf_solve.close_chrome", "botasaurus_cf_solve.botasaurus_controls"]),
+    packages=find_packages(include=["botasaurus_cf_solve", "botasaurus_cf_solve.*"]),
     version='4.0.60',
     license="MIT",
     project_urls={
